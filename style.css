@@ -1,0 +1,102 @@
+.tape-cell {
+    width: 25px;
+    height: 25px;
+}
+
+main {
+    padding-left: 20px;
+}
+
+.settings {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+}
+
+.transition-table {
+    margin: 20px;
+    margin-left: 0;
+    width: 200px;
+    max-width: 200px;
+    min-width: 200px;
+    height: 500px;
+}
+
+.machine-settings {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.machine-settings label {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.tapes-settings {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.tape-settings {
+    display: flex;
+    align-self: start;
+    align-items: center;
+    margin-left: 20px;
+
+    padding: 10px;
+}
+
+.tape-settings .head-init-pos {
+    width: 50px;
+}
+
+.tape-settings .tape-input {
+    width: 100px;
+}
+
+button {
+    align-self: flex-end;
+    margin: 5px;
+}
+
+.tape-settings h3 {
+    margin: 0;
+}
+
+.tape-settings label {
+    margin-left: 30px;
+    margin-right: 10px;
+}
+
+.head {
+    background: #00AAFF88;
+}
+
+.machine {
+    display: flex;
+    flex-direction: column;
+}
+
+.machine .current-state, .machine .current-rule {
+    font-size: 1.1em;
+    padding: 10px;
+}
+
+.tape {
+    display: flex;
+    flex-direction: row;
+}
+
+.tape span {
+    text-align: center;
+    padding: 5px;
+    font-size: 1.2em;
+    width: 12px;
+}
+
+.modify-tape-count {
+    padding: 5px;
+
+}

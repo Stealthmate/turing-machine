@@ -14,22 +14,19 @@
 
         <div class="machine-settings">
           <label for="delay">実行スピード</label>
-          <input id="delay" type="number" min="0" value="1" step="100" v-model.number="delay"/>
+          <input id="speed" type="range" min="1" max="3" step="0.5" value="2" class="slider" v-model.number="speed" v-bind:disabled="isRunning" />
           <label for="tape-length">テープ長</label>
-          <input id="tape-length" type="number" min="10" value="10" v-model.number="tape_length" @input="resetContents()"/>
+          <input id="tape-length" type="number" min="10" value="10" v-model.number="tape_length" @input="resetContents()" v-bind:disabled="isRunning"/>
 
           <label for="init-state">初期状態</label>
-          <input id="init-state" type="text" v-model="init_state"/>
+          <input id="init-state" type="text" v-model="init_state" v-bind:disabled="isRunning"/>
         </div>
 
         <div class="tapes-settings">
           <div class="tape-settings" v-for="i in n_tapes">
             <h3>テープ{{i}}</h3>
-            <label v-bind:for="`tape-${i}-head-init-pos`">ヘッド初期位置</label>
-            <input v-bind:id="`tape-${i}-head-init-pos`" class="head-init-pos" type="number" min="0" value="1" v-model.number="tapes[i-1].head_init_pos"/>
-
             <label v-bind:for="`tape-${i}-input`">入力</label>
-            <input v-bind:id="`tape-${i}-input`" class="tape-input" type="text" v-model="tapes[i-1].input" @input="resetContents(i - 1)"/>
+            <input v-bind:id="`tape-${i}-input`" class="tape-input" type="text" v-model="tapes[i-1].input" @input="resetContents(i - 1)" v-bind:disabled="isRunning"/>
           </div>
         </div>
 
@@ -39,6 +36,7 @@
         </div>
       </section>
       <button @click="run()">Run</button>
+      <button @click="stop()">Stop</button>
 
       <section class="machine">
 

@@ -5,11 +5,10 @@ function tm_CompileTable(t) {
 
   let tt = {}
 
-  console.log(t)
-
   try {
     let parsingState = undefined
     t.split("\n").forEach(line => {
+      // skip comments and empty lines
       if(line.startsWith("#") || line == '') return;
 
       let els = line.split(" - ")

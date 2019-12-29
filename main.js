@@ -1,72 +1,23 @@
-
-const BLANK = "_"
-const REJECT = 'reject'
-const ACCEPT = 'accept'
-
-const DEFAULT_TT_STRING = `# This is a comment
-# Comments and empty lines are ignored
-# The following checks if there are
-# more than one 1s in the input string
-
-# define transitions for some_state
-some_state
-
-1 - some_other_state,1,R
-# if at some_state we encounter 0,
-# switch to some_other_state,
-# write 1 and move (R)ight
-0 - some_state,0,R
-_ - accept,_,R
-
-some_other_state
-0 - some_other_state,0,R
-1 - reject,1,S
-_ - accept,_,S
-
-# Cheat-sheet
-# 1. _ stands for whitespace
-# 2. The head can (S)tay or move
-#    (R)ight or (L)eft
-# 3. The machien stops only
-#     if the state is 'reject' or 'accept'
-# 4. For 2 or more tapes,
-#    write like this:
-#    a,b - foo,c,d,R,L
-#    i.e. if you encounter
-#         'a' on tape 1 and
-#         'b' on tape 2,
-#    switch to state 'foo',
-#    write 'c' on tape 1 and
-#          'd' on tape 2 then
-#    move Right on tape 1 and
-#         Left  on tape 2
-`
-
-const DEFAULT = {
-  tt_string: DEFAULT_TT_STRING,
-  state: 'some_state',
-  input: '00011',
-}
-
 var app = new Vue({
   el: '#app',
   data: function () {
+    let l = DATA.common.default_locale
     let d = {
+      locale: l,
       n_tapes: 0,
-      tape_length: 40,
-      speed: 2,
-      transition_table_string: DEFAULT.tt_string,
+      tape_length: DATA.common.default_tape_length,
+      speed: DATA.common.default_speed,
       transition_table: {},
       tape_template: {
         head_pos: undefined,
-        input: DEFAULT.input,
+        input: DATA.common.default_input,
         content: ''
       },
       tapes: [],
-      current_state: undefined,
-      current_rule: undefined,
-      init_state: DEFAULT.state,
-      isRunning: false
+      current_state: '',
+      current_rule: '',
+      init_state: DATA.common.default_state,
+      isRunning: false,
     }
     return d
   },
@@ -76,6 +27,12 @@ var app = new Vue({
     },
     delay() {
       return Math.pow(10, this.speed)
+    },
+    strings() {
+      return DATA.localized[this.locale]
+    },
+    transition_table_string() {
+      return DATA.localized[this.locale].default_transition_script;
     }
   },
 
@@ -90,24 +47,23 @@ var app = new Vue({
         this.$set(t.content, t.head_pos, syms[i])
         this.$set(t, 'head_pos', t.head_pos + heads[i])
       })
-      if(state == REJECT || state == ACCEPT) {
-        this.current_rule = undefined
+      if(state == DATA.common.reject || state == DATA.common.accept) {
+        this.current_rule = ''
         this.isRunning = false
         return
       }
 
       let inputs = this.tapes.map(t => t.content[t.head_pos])
-      let result = tm_Evaluate(this.current_state, inputs, this.transition_table)
+      let result = tm_Evaluate(this.current_state, inputs, this.transition_table, this.strings)
       this.current_rule = result.rule
 
       setTimeout(() => this.advanceState(result.newState, result.newSyms, result.newHeads), this.delay)
     },
 
     run() {
-
-      this.transition_table = tm_CompileTable(this.transition_table_string)
+      this.transition_table = tm_CompileTable(this.transition_table_string, this.strings)
       this.tapes.forEach((t, i) => {
-        t.head_pos = this.tapes_head_init[i]
+        this.resetContents(i)
       })
       this.isRunning = true
       this.advanceState(
@@ -134,18 +90,20 @@ var app = new Vue({
 
     resetContents(i) {
       let t = this.tapes[i]
+      t.head_pos = this.tapes_head_init[i]
+
       let n = t.input.length
+      let input = t.input.replace(" ", "_")
       let sp = Math.floor((this.tape_length - n) / 2)
       if(sp >= 0) {
-        let blanks = BLANK.repeat(sp)
-        t.content = blanks + t.input + blanks + ((n + this.tape_length) % 2 != 0 ? BLANK : "")
+        let blanks = DATA.common.blank.repeat(sp)
+        t.content = blanks + input + blanks + ((n + this.tape_length) % 2 != 0 ? DATA.common.blank : "")
       } else {
-        t.content = t.input.slice(0, this.tape_length)
+        t.content = input.slice(0, this.tape_length)
       }
 
       t.content = t.content.split("")
 
-      t.head_pos = this.tapes_head_init[i]
     }
   },
 

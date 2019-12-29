@@ -1,47 +1,56 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <script src="./data.js"></script>
     <script src="./tm.js" defer></script>
     <script src="./main.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" type="text/css" href="./style.css">
   </head>
   <body>
-    <main id="app">
+    <main id="app" v-bind:key="locale">
+      <select v-model="locale">
+        <option value="en">English</option>
+        <option value="jp">日本語</option>
+      </select>
       <section class="settings">
 
         <textarea class="transition-table" type="text" v-model="transition_table_string"></textarea>
 
         <div class="machine-settings">
-          <label for="delay">実行スピード</label>
-          <input id="speed" type="range" min="1" max="3" step="0.5" value="2" class="slider" v-model.number="speed" v-bind:disabled="isRunning" />
-          <label for="tape-length">テープ長</label>
+          <label for="delay">{{ strings.label.speed }}</label>
+          <div id="speed-slider">
+            <span>{{strings.label.speed_fast}}</span>
+            <input id="speed" type="range" min="1" max="3" step="0.5" value="2" class="slider" v-model.number="speed" v-bind:disabled="isRunning" />
+            <span>{{strings.label.speed_slow}}</span>
+          </div>
+          <label for="tape-length">{{ strings.label.tape_length }}</label>
           <input id="tape-length" type="number" min="10" value="10" v-model.number="tape_length" @input="resetContents()" v-bind:disabled="isRunning"/>
 
-          <label for="init-state">初期状態</label>
+          <label for="init-state">{{ strings.label.init_state }}</label>
           <input id="init-state" type="text" v-model="init_state" v-bind:disabled="isRunning"/>
         </div>
 
         <div class="tapes-settings">
           <div class="tape-settings" v-for="i in n_tapes">
-            <h3>テープ{{i}}</h3>
-            <label v-bind:for="`tape-${i}-input`">入力</label>
+            <h3>{{ strings.label.tape.replace("%i%", i) }}</h3>
+            <label v-bind:for="`tape-${i}-input`">{{ strings.label.input }}</label>
             <input v-bind:id="`tape-${i}-input`" class="tape-input" type="text" v-model="tapes[i-1].input" @input="resetContents(i - 1)" v-bind:disabled="isRunning"/>
           </div>
         </div>
 
         <div class="modify-tape-count">
-          <button @click="add_tape()">テープを追加</button>
-          <button @click="remove_tape()">テープを削除</button>
+          <button @click="add_tape()">{{ strings.label.add_tape }}</button>
+          <button @click="remove_tape()">{{ strings.label.remove_tape }}</button>
         </div>
       </section>
-      <button @click="run()">Run</button>
-      <button @click="stop()">Stop</button>
+      <button @click="run()">{{ strings.label.run }}</button>
+      <button @click="stop()">{{ strings.label.stop }}</button>
 
       <section class="machine">
 
-        <div class="current-state">状態: {{ current_state }}</div>
-        <div class="current-rule">規則: {{ current_rule }}</div>
+        <div class="current-state">{{ strings.label.state.replace("%i%", current_state) }}</div>
+        <div class="current-rule">{{ strings.label.rule.replace("%i%", current_rule) }}</div>
 
         <div class="tapes">
           <div v-for="tape in tapes" class="tape">

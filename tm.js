@@ -1,8 +1,6 @@
-const AUTO_REJECT_RULE = '遷移先無し'
 const MOVE = {L: -1, R: 1, S: 0}
 
-function tm_CompileTable(t) {
-
+function tm_CompileTable(t, strings) {
   let tt = {}
 
   try {
@@ -32,13 +30,13 @@ function tm_CompileTable(t) {
   return tt
 }
 
-function tm_Evaluate(state, inputs, table) {
+function tm_Evaluate(state, inputs, table, strings) {
   let N = inputs.length
   let next = table[state][inputs]
-  let newState = REJECT
+  let newState = DATA.common.reject
   let newSyms = inputs
   let newHeads = Array(N).fill(0)
-  let rule = AUTO_REJECT_RULE
+  let rule = strings.auto_reject_rule
   if (next !== undefined) {
     rule = inputs.join(",") + " - " + next.join(",")
     newState = next[0]

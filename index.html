@@ -9,7 +9,7 @@
   </head>
   <body>
     <main id="app" v-bind:key="locale">
-      <select v-model="locale">
+      <select v-model="locale" @change="changeLocale()">
         <option value="en">English</option>
         <option value="jp">日本語</option>
       </select>

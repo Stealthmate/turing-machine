@@ -35,6 +35,9 @@ var app = new Vue({
   },
 
   methods: {
+    changeLocale() {
+      this.transition_table_string = DATA.localized[this.locale].default_transition_script
+    },
 
     advanceState(state, syms, heads) {
       if(!this.isRunning) { return }

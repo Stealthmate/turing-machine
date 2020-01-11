@@ -8,6 +8,7 @@ var app = new Vue({
       tape_length: DATA.common.default_tape_length,
       speed: DATA.common.default_speed,
       transition_table: {},
+      transition_table_string: DATA.localized[l].default_transition_script,
       tape_template: {
         head_pos: undefined,
         input: DATA.common.default_input,
@@ -30,9 +31,6 @@ var app = new Vue({
     },
     strings() {
       return DATA.localized[this.locale]
-    },
-    transition_table_string() {
-      return DATA.localized[this.locale].default_transition_script;
     }
   },
 

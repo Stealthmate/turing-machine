@@ -27,6 +27,9 @@ var DATA = {
         state: '状態: %i%',
         rule: '規則: %i%'
       },
+      err: {
+        undefined_state: "状態が定義されていません：",
+      },
       auto_reject_rule: '定義が無い',
       default_transition_script:`# これはコメントです
 # コメントと空行は無視されます
@@ -82,6 +85,9 @@ _ - accept,_,S
         stop: 'Stop',
         state: 'State: %i%',
         rule:  'Rule : %i%'
+      },
+      err: {
+        undefined_state: "Undefined state: ",
       },
       auto_reject_rule: 'Not defined',
       default_transition_script:`# This is a comment

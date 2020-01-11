@@ -53,6 +53,11 @@ var app = new Vue({
 
       let inputs = this.tapes.map(t => t.content[t.head_pos])
       let result = tm_Evaluate(this.current_state, inputs, this.transition_table, this.strings)
+      if(result === undefined) {
+        this.stop()
+        alert(DATA.localized[this.locale].err.undefined_state + this.current_state)
+        return
+      }
       this.current_rule = result.rule
 
       setTimeout(() => this.advanceState(result.newState, result.newSyms, result.newHeads), this.delay)

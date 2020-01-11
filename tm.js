@@ -32,6 +32,7 @@ function tm_CompileTable(t, strings) {
 
 function tm_Evaluate(state, inputs, table, strings) {
   let N = inputs.length
+  if(table[state] === undefined) { return undefined }
   let next = table[state][inputs]
   let newState = DATA.common.reject
   let newSyms = inputs

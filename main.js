@@ -91,6 +91,7 @@ var app = new Vue({
 
     remove_tape() {
       this.n_tapes -= 1
+      if(this.n_tapes <=0) this.n_tapes = 0
       this.$delete(this.tapes, this.n_tapes)
     },
 

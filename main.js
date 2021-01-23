@@ -7,18 +7,19 @@ var app = new Vue({
       n_tapes: 0,
       tape_length: DATA.common.default_tape_length,
       speed: DATA.common.default_speed,
-      transition_table: {},
-      transition_table_string: DATA.localized[l].default_transition_script,
+      program_string: DATA.localized[l].default_transition_script,
+      program_changed: true,
       tape_template: {
         head_pos: undefined,
         input: DATA.common.default_input,
         content: ''
       },
       tapes: [],
-      current_state: '',
-      current_rule: '',
+      current_state:DATA.common.default_state,
       init_state: DATA.common.default_state,
       isRunning: false,
+      steps: 0,
+      state_history: [],
     }
     return d
   },
@@ -31,56 +32,78 @@ var app = new Vue({
     },
     strings() {
       return DATA.localized[this.locale]
+    },
+    program() {
+      return tm_CompileTable(this.program_string, this.strings);
+    },
+    inputs() {
+      return this.tapes.map(t => t.content[t.head_pos]);
+    },
+    next_rule() {
+      return tm_FindRule(this.current_state, this.inputs, this.program, this.strings);
+    },
+    finished() {
+      return this.current_state === DATA.common.reject || this.state === DATA.common.accept;
     }
   },
 
   methods: {
     changeLocale() {
-      this.transition_table_string = DATA.localized[this.locale].default_transition_script
+      this.program_string = DATA.localized[this.locale].default_transition_script
+    },
+    onProgramInput() {
+      this.program_changed = true;
+    },
+    reset() {
+      this.steps = 0;
+      this.tapes.forEach((t, i)=> this.resetContents(i));
+      this.current_state = this.init_state;
+      this.state_history = [];
+      this.isRunning = false;
+    },
+    raiseError(err) {
+      alert(err);
+      this.isRunning = false;
+    },
+    step() {
+      if(this.current_state === DATA.common.reject || this.current_state === DATA.common.accept) {
+        return;
+      }
+
+      this.state_history.push({ state: this.current_state, rule: this.next_rule });
+      let result = tm_Evaluate(this.current_state, this.inputs, this.program, this.strings);
+      if(result === undefined) {
+        this.raiseError(DATA.localized[this.locale].err.undefined_state + this.current_state);
+        return;
+      }
+
+      this.tapes.forEach((t, i) => {
+        this.$set(t.content, t.head_pos, result.newSymbols[i]);
+        this.$set(t, 'head_pos', t.head_pos + result.newHeads[i]);
+      });
+
+      this.current_state = result.newState;
+
+      this.steps = this.steps + 1;
     },
 
-    advanceState(state, syms, heads) {
-      if(!this.isRunning) { return }
-
-
-      this.current_state = state
-      this.tapes.forEach((t, i) => {
-        this.$set(t.content, t.head_pos, syms[i])
-        this.$set(t, 'head_pos', t.head_pos + heads[i])
-      })
-      if(state == DATA.common.reject || state == DATA.common.accept) {
-        this.current_rule = ''
-        this.isRunning = false
-        return
+    spin() {
+      if(!this.isRunning) return;
+      if(this.finished) {
+        this.isRunning = false;
+        return;
       }
-
-      let inputs = this.tapes.map(t => t.content[t.head_pos])
-      let result = tm_Evaluate(this.current_state, inputs, this.transition_table, this.strings)
-      if(result === undefined) {
-        this.stop()
-        alert(DATA.localized[this.locale].err.undefined_state + this.current_state)
-        return
-      }
-      this.current_rule = result.rule
-
-      setTimeout(() => this.advanceState(result.newState, result.newSyms, result.newHeads), this.delay)
+      this.step();
+      setTimeout(() => this.spin(), this.delay);
     },
 
     run() {
-      this.transition_table = tm_CompileTable(this.transition_table_string, this.strings)
-      this.tapes.forEach((t, i) => {
-        this.resetContents(i)
-      })
-      this.isRunning = true
-      this.advanceState(
-        this.init_state,
-        this.tapes.map((t, i) => t.content[this.tapes_head_init[i]]),
-        Array(this.n_tapes).fill(0)
-      )
+      this.isRunning = true;
+      setTimeout(this.spin, this.delay);
     },
 
     stop() {
-      this.isRunning = false
+      this.isRunning = false;
     },
 
     add_tape() {
@@ -110,11 +133,11 @@ var app = new Vue({
       }
 
       t.content = t.content.split("")
-
     }
   },
 
   created: function() {
-    this.add_tape()
+    this.add_tape();
+    this.reset();
   }
 })

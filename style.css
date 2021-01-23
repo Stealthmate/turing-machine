@@ -13,7 +13,7 @@ main {
     margin-top: 20px;
 }
 
-.transition-table {
+.program {
     margin: 20px;
     margin-left: 0;
     width: 400px;
@@ -74,14 +74,22 @@ button {
     background: #00AAFF88;
 }
 
-.machine {
-    display: flex;
-    flex-direction: column;
+#machine-state {
+  list-style: none;
+  padding: 0;
 }
 
-.machine .current-state, .machine .current-rule {
-    font-size: 1.1em;
-    padding: 10px;
+#machine-state li label {
+  display: inline-block;
+  width: 150px;
+}
+
+#state-history table td:first-child {
+  width: 200px;
+}
+
+#total-steps {
+  font-style: italic;
 }
 
 .tape {

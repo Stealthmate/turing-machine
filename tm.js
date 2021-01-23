@@ -30,25 +30,35 @@ function tm_CompileTable(t, strings) {
   return tt
 }
 
+function tm_FindRule(state, inputs, table, strings) {
+  let N = inputs.length;
+  if(table[state] === undefined) { return undefined; }
+  let next = table[state][inputs];
+  if(next !== undefined) {
+    return inputs.join(",") + " - " + next.join(",");
+  }
+  return "reject";
+}
+
 function tm_Evaluate(state, inputs, table, strings) {
   let N = inputs.length
   if(table[state] === undefined) { return undefined }
   let next = table[state][inputs]
   let newState = DATA.common.reject
-  let newSyms = inputs
+  let newSymbols = inputs
   let newHeads = Array(N).fill(0)
   let rule = strings.auto_reject_rule
   if (next !== undefined) {
     rule = inputs.join(",") + " - " + next.join(",")
     newState = next[0]
     newHeads = next.slice(1 + N, next.length).map((n, i) => MOVE[n])
-    newSyms = next.slice(1, 1 + N + 1)
+    newSymbols = next.slice(1, 1 + N + 1)
   }
 
   return {
     newState: newState,
     newHeads: newHeads,
-    newSyms: newSyms,
+    newSymbols: newSymbols,
     rule: rule
   }
 }

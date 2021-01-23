@@ -15,13 +15,13 @@
       </select>
       <section class="settings">
 
-        <textarea class="transition-table" type="text" v-model="transition_table_string"></textarea>
+        <textarea class="program" type="text" v-model="program_string" v-on:input="onProgramInput()"></textarea>
 
         <div class="machine-settings">
           <label for="delay">{{ strings.label.speed }}</label>
           <div id="speed-slider">
             <span>{{strings.label.speed_fast}}</span>
-            <input id="speed" type="range" min="1" max="3" step="0.5" value="2" class="slider" v-model.number="speed" v-bind:disabled="isRunning" />
+            <input id="speed" type="range" min="1" max="3" step="0.25" value="2" class="slider" v-model.number="speed" v-bind:disabled="isRunning" />
             <span>{{strings.label.speed_slow}}</span>
           </div>
           <label for="tape-length">{{ strings.label.tape_length }}</label>
@@ -44,18 +44,40 @@
           <button @click="remove_tape()">{{ strings.label.remove_tape }}</button>
         </div>
       </section>
-      <button @click="run()">{{ strings.label.run }}</button>
-      <button @click="stop()">{{ strings.label.stop }}</button>
 
-      <section class="machine">
-
-        <div class="current-state">{{ strings.label.state.replace("%i%", current_state) }}</div>
-        <div class="current-rule">{{ strings.label.rule.replace("%i%", current_rule) }}</div>
-
+      <section id="machine">
+        <div id="operation">
+          <button @click="step()">{{ strings.label.step }}</button>
+          <button @click="run()">{{ strings.label.run }}</button>
+          <button @click="stop()">{{ strings.label.stop }}</button>
+          <button @click="reset()">{{ strings.label.reset }}</button>
+        </div>
+        <ol id="machine-state">
+          <li>
+            <label>{{ strings.label.current_state }}</label>
+            <span>{{ current_state }}</span>
+          </li>
+          <li>
+            <label>{{ strings.label.next_rule }}</label>
+            <span>{{ next_rule }}</span>
+          </li>
+        </ol>
         <div class="tapes">
           <div v-for="tape in tapes" class="tape">
             <span v-bind:class="i == tape.head_pos ? 'head' : ''" v-for="c,i in tape.content"> {{c}} </span>
           </div>
+        </div>
+      </section>
+      <section id="state-history">
+        <h3>State Transition History</h3>
+        <div>
+          <label id="total-steps">{{ strings.label.total_steps }}: {{ steps }}</label>
+          <table>
+            <tr v-for="sh in state_history">
+              <td>{{ sh.state }}</td>
+              <td>{{ sh.rule }}</td>
+            </tr>
+          </table>
         </div>
       </section>
     </main>

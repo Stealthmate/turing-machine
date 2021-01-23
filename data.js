@@ -22,10 +22,13 @@ var DATA = {
         remove_tape: 'テープを削除',
         tape_length: 'テープ長',
         init_state: '初期状態',
+        step: '一回実行',
         run: '実行',
         stop: '中止',
-        state: '状態: %i%',
-        rule: '規則: %i%'
+        reset: 'リセット',
+        current_state: '現状態',
+        next_rule: '規則',
+        total_steps: '合計ステップ数'
       },
       err: {
         undefined_state: "状態が定義されていません：",
@@ -81,10 +84,15 @@ _ - accept,_,S
         remove_tape: 'Remove Tape',
         tape_length: 'Tape Length',
         init_state: 'Initial State',
+        step: 'Step',
         run: 'Run',
         stop: 'Stop',
+        reset: 'Reset',
         state: 'State: %i%',
-        rule:  'Rule : %i%'
+        rule:  'Rule : %i%',
+        current_state: 'Current State',
+        next_rule: 'Next Rule',
+        total_steps: 'Total Steps'
       },
       err: {
         undefined_state: "Undefined state: ",

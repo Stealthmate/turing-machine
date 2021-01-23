@@ -28,7 +28,8 @@ var DATA = {
         reset: 'リセット',
         current_state: '現状態',
         next_rule: '規則',
-        total_steps: '合計ステップ数'
+        total_steps: '合計ステップ数',
+        state_transition_history: '状態遷移履歴'
       },
       err: {
         undefined_state: "状態が定義されていません：",
@@ -92,7 +93,8 @@ _ - accept,_,S
         rule:  'Rule : %i%',
         current_state: 'Current State',
         next_rule: 'Next Rule',
-        total_steps: 'Total Steps'
+        total_steps: 'Total Steps',
+        state_transition_history: 'State Transition History'
       },
       err: {
         undefined_state: "Undefined state: ",

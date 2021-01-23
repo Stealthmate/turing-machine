@@ -8,7 +8,6 @@ var app = new Vue({
       tape_length: DATA.common.default_tape_length,
       speed: DATA.common.default_speed,
       program_string: DATA.localized[l].default_transition_script,
-      program_changed: true,
       tape_template: {
         head_pos: undefined,
         input: DATA.common.default_input,
@@ -50,9 +49,6 @@ var app = new Vue({
   methods: {
     changeLocale() {
       this.program_string = DATA.localized[this.locale].default_transition_script
-    },
-    onProgramInput() {
-      this.program_changed = true;
     },
     reset() {
       this.steps = 0;
@@ -113,9 +109,8 @@ var app = new Vue({
     },
 
     remove_tape() {
-      this.n_tapes -= 1
-      if(this.n_tapes <=0) this.n_tapes = 0
-      this.$delete(this.tapes, this.n_tapes)
+      this.n_tapes = Math.max(1, this.n_tapes - 1);
+      this.tapes = this.tapes.slice(0, this.n_tapes);
     },
 
     resetContents(i) {

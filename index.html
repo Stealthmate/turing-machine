@@ -15,9 +15,11 @@
       </select>
       <section class="settings">
 
-        <textarea class="program" type="text" v-model="program_string" v-on:input="onProgramInput()"></textarea>
+        <div id="program-edit">
+          <textarea class="program" type="text" v-model="program_string"></textarea>
+        </div>
 
-        <div class="machine-settings">
+        <div id="machine-settings">
           <label for="delay">{{ strings.label.speed }}</label>
           <div id="speed-slider">
             <span>{{strings.label.speed_fast}}</span>
@@ -31,7 +33,7 @@
           <input id="init-state" type="text" v-model="init_state" v-bind:disabled="isRunning"/>
         </div>
 
-        <div class="tapes-settings">
+        <div id="tapes-settings">
           <div class="tape-settings" v-for="i in n_tapes">
             <h3>{{ strings.label.tape.replace("%i%", i) }}</h3>
             <label v-bind:for="`tape-${i}-input`">{{ strings.label.input }}</label>
